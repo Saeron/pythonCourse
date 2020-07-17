@@ -1,3 +1,4 @@
+import math
 class Category():
     num_stars = 30
 
@@ -74,10 +75,39 @@ class Category():
         return star_name + '\n' + deposits + 'Total: ' + str(self.get_balance())
 
 
+def __add_withdraw(categories_dic, categories):
+    total = 0
+    for category in categories:
+        name = category.name
+        categories_dic[name] = 0
+        for item in category.ledger:
+            if item['amount'] < 0:
+                categories_dic[name] += item['amount']
+        total += categories_dic[name]
+    categories_dic = calc_percent(categories_dic, total)
+
+def __print_axis(categories_dic):
+    chart = ''
+    for i in range(100, -10, -10):
+        snum = str(i)
+        shift = 4
+        chart +=(str(i) + '|').rjust(4) +' '
+        for value in categories_dic.values():
+            if value >= i:
+                chart += 'o  '
+            else:
+                chart += '   '
+        chart+='\n'
+    return chart
+
+def truncate(number, digits) -> float:
+    stepper = 10.0 ** digits
+    return math.trunc(stepper * number) / stepper
+
 def calc_percent(categories_dic, total):
     # Calculating the percent
     for category, value in categories_dic.items():
-        categories_dic[category] = int(round(abs(value) / abs(total), 1)*100)
+        categories_dic[category] = int(truncate(abs(value) / abs(total), 1)*100)
 
     return categories_dic
 
@@ -89,32 +119,48 @@ def __print_cover(categories_dic):
     cover = ''
     for i in range(0, num_cover):
         cover += '-'
-    print('    ' + cover)
+    return '    ' + cover
+
+def __get_names(names, categories_dic):
+    max_name = ''
+    for name in categories_dic:
+        names.append(name)
+        if len(name) > len(max_name):
+            max_name = name
+    return max_name
+
+def __print_names(names, max_name):
+    chart = ''
+    for index in range(0, len(max_name)):
+        chart += '     '
+        for n in names:
+            if index < len(n):
+                chart += n[index] + '  '
+            else:
+                chart += '   '
+        chart += '\n'
+
+    return chart.rstrip() + '  '
 
 
 def create_spend_chart(categories):
     categories_dic = dict()
-    total = 0
+    chart = ''
     # Adding all withdraw
-    for category in categories:
-        name = category.name
-        categories_dic[name] = 0
-        for item in category.ledger:
-            if item['amount'] < 0:
-                categories_dic[name] += item['amount']
-        total += categories_dic[name]
-    categories_dic = calc_percent(categories_dic, total)
+    __add_withdraw(categories_dic, categories)
 
-    print('Percentage spent by category')
-    for i in range(100, -10, -10):
-        snum = str(i)
-        shift = 4
-        print((str(i) + '|').rjust(4), end='')
-        print(' ', end='')
-        for value in categories_dic.values():
-            if value >= i:
-                print('o  ', end='')
-        print('')
+    chart = 'Percentage spent by category' + '\n'
+    chart += __print_axis(categories_dic)
+
+    chart +=__print_cover(categories_dic) + '\n'
+
+    names = list()
+    max_name = __get_names(names, categories_dic)
+    
+    chart += __print_names(names, max_name)
+
+    return chart
+
+    
 
 
-    __print_cover(categories_dic)
