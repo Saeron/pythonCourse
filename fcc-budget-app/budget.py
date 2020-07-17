@@ -160,7 +160,3 @@ def create_spend_chart(categories):
     chart += __print_names(names, max_name)
 
     return chart
-
-    
-
-
