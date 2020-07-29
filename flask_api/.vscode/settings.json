@@ -1,0 +1,9 @@
+{
+    "python.venvFolders": [
+        ".env"
+    ],
+    "python.linting.pylintEnabled": false,
+    "python.linting.banditEnabled": true,
+    "python.linting.enabled": true,
+    "python.pythonPath": "/home/saeron/Desarrollo/Python/flask_api/.env/bin/python3"
+}

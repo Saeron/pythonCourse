@@ -10,7 +10,7 @@ class Hat:
         values = dict(**kwargs)
         for item, value in values.items():
             for i in range(0, value):
-                self.contents.insert(0, item)
+                self.contents.append(item)
 
     def draw(self, num):
         draws = list()
