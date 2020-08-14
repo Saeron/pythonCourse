@@ -1,5 +1,6 @@
 from flask import Flask, jsonify, request
 import pymongo
+from bson.json_util import dumps
 
 client = pymongo.MongoClient("mongodb://localhost:27017/")
 db = client["usersdb"]
@@ -10,10 +11,13 @@ app.config['DEBUG'] = True
 
 @app.route('/', methods=['GET'])
 def get_db():
-    list_names = users.find() 
+    lista = list()
+    list_names = users.find()
     for i in list_names:
-        print(list_names)
-    return "hello" 
+        name = i.get("name")
+        email = i.get("email")
+        lista.append({"name": name, "email":email})
+    return jsonify(lista)
 
 @app.route('/put', methods=['GET'])
 def put_some():
