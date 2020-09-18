@@ -1,4 +1,4 @@
-$("form[name=signup_form]").submit(fuction(e) {
+$("form[name=signup_form]").submit(function(e) {
 	var $form = $(this);
 	var $error = $form.find(".error");
 	var data = $form.serialize();
@@ -8,11 +8,33 @@ $("form[name=signup_form]").submit(fuction(e) {
 		type: "POST",
 		data: data,
 		dataType: "json",
-		success: fuction(resp){
-			console.log(resp);
+		success: function(resp){
+			window.location.href = "/dashboard/";
 		},
-		error: fuction(resp){
-			console.log(resp);
+		error: function(resp){
+			$error.text(resp.responseJSON.error).removeClass("error--hidden")
+		}
+	})
+
+	e.preventDefault();
+
+});
+
+$("form[name=login_form]").submit(function(e) {
+	var $form = $(this);
+	var $error = $form.find(".error");
+	var data = $form.serialize();
+
+	$.ajax({
+		url: "/user/login",
+		type: "POST",
+		data: data,
+		dataType: "json",
+		success: function(resp){
+			window.location.href = "/dashboard/";
+		},
+		error: function(resp){
+			$error.text(resp.responseJSON.error).removeClass("error--hidden")
 		}
 	})
 
